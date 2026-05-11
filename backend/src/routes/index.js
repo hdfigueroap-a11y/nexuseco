@@ -81,6 +81,18 @@ router.put('/projects/:id/geo',
 
 router.get('/projects/:id/geo', authenticate, projectsCtrl.getGeo);
 
+router.get('/projects/explore/available',
+  authenticate,
+  authorize('empresa'),
+  projectsCtrl.listAvailable
+);
+
+router.post('/projects/:id/invest',
+  authenticate,
+  authorize('empresa'),
+  projectsCtrl.invest
+);
+
 // ─────────────────────────────────────────────────────────
 // RF04 — Registro de Indicadores  (RF05 y RF06 son automáticos)
 // ─────────────────────────────────────────────────────────
