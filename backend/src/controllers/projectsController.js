@@ -266,4 +266,63 @@ async function getGeo(req, res, next) {
   }
 }
 
-module.exports = { create, list, getOne, update, setGeo, getGeo };
+
+// ── RF02 Explorar y financiar proyectos ─────────────────
+
+async function listAvailable(req, res, next) {
+  try {
+    const companyId = req.user.id;
+    const { rows } = await query(
+      `SELECT p.*, pm.current_ivi, pm.compliance_pct,
+              u.full_name AS owner_name,
+              pg.area_km2
+       FROM projects p
+       LEFT JOIN project_metrics pm ON pm.project_id = p.id
+       LEFT JOIN users u ON u.id = p.owner_id
+       LEFT JOIN project_geo pg ON pg.project_id = p.id
+       WHERE p.status = 'activo'
+         AND (p.company_id IS NULL OR p.company_id != $1)
+       ORDER BY p.created_at DESC`,
+      [companyId]
+    );
+    return res.json(rows);
+  } catch (err) {
+    next(err);
+  }
+}
+
+async function invest(req, res, next) {
+  try {
+    const { id } = req.params;
+    const companyId = req.user.id;
+
+    const { rows: [project] } = await query(
+      'SELECT * FROM projects WHERE id = $1', [id]
+    );
+    if (!project) return res.status(404).json({ error: 'Proyecto no encontrado.' });
+    if (project.company_id === companyId) {
+      return res.status(409).json({ error: 'Ya estás invirtiendo en este proyecto.' });
+    }
+
+    const { rows: [updated] } = await query(
+      `UPDATE projects SET company_id = $1, updated_at = NOW()
+       WHERE id = $2 RETURNING *`,
+      [companyId, id]
+    );
+
+    await logChange({
+      projectId: id,
+      userId: companyId,
+      entity: 'projects',
+      action: 'invest',
+      oldValues: { company_id: project.company_id },
+      newValues: { company_id: companyId },
+    });
+
+    return res.json(updated);
+  } catch (err) {
+    next(err);
+  }
+}
+
+module.exports = { create, list, getOne, update, setGeo, getGeo, listAvailable, invest };
