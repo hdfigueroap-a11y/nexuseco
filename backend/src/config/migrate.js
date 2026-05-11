@@ -1,4 +1,3 @@
-// backend/src/config/migrate.js
 require('dotenv').config();
 const { pool } = require('./db');
 
@@ -16,17 +15,17 @@ CREATE TABLE IF NOT EXISTS users (
 );
 
 CREATE TABLE IF NOT EXISTS projects (
-  id              UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  name            VARCHAR(255) NOT NULL,
-  description     TEXT,
-  tree_goal       INTEGER NOT NULL DEFAULT 0,
-  start_date      DATE,
-  end_date        DATE,
-  status          VARCHAR(20) DEFAULT 'activo' CHECK (status IN ('activo','inactivo','finalizado')),
-  owner_id        UUID NOT NULL REFERENCES users(id) ON DELETE RESTRICT,
-  company_id      UUID REFERENCES users(id) ON DELETE SET NULL,
-  created_at      TIMESTAMPTZ DEFAULT NOW(),
-  updated_at      TIMESTAMPTZ DEFAULT NOW()
+  id          UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  name        VARCHAR(255) NOT NULL,
+  description TEXT,
+  tree_goal   INTEGER NOT NULL DEFAULT 0,
+  start_date  DATE,
+  end_date    DATE,
+  status      VARCHAR(20) DEFAULT 'activo' CHECK (status IN ('activo','inactivo','finalizado')),
+  owner_id    UUID NOT NULL REFERENCES users(id) ON DELETE RESTRICT,
+  company_id  UUID REFERENCES users(id) ON DELETE SET NULL,
+  created_at  TIMESTAMPTZ DEFAULT NOW(),
+  updated_at  TIMESTAMPTZ DEFAULT NOW()
 );
 
 CREATE TABLE IF NOT EXISTS project_geo (
@@ -42,38 +41,38 @@ CREATE TABLE IF NOT EXISTS project_geo (
 );
 
 CREATE TABLE IF NOT EXISTS indicators (
-  id                  UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  project_id          UUID NOT NULL REFERENCES projects(id) ON DELETE RESTRICT,
-  user_id             UUID NOT NULL REFERENCES users(id) ON DELETE RESTRICT,
-  temperature         NUMERIC(5,2),
-  humidity            NUMERIC(5,2),
-  trees_planted       INTEGER NOT NULL DEFAULT 0,
-  trees_survived      INTEGER NOT NULL DEFAULT 0,
-  ivi                 NUMERIC(5,2),
-  compliance_pct      NUMERIC(5,2),
-  is_suspicious       BOOLEAN DEFAULT FALSE,
-  recorded_at         TIMESTAMPTZ DEFAULT NOW()
+  id             UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  project_id     UUID NOT NULL REFERENCES projects(id) ON DELETE RESTRICT,
+  user_id        UUID NOT NULL REFERENCES users(id) ON DELETE RESTRICT,
+  temperature    NUMERIC(5,2),
+  humidity       NUMERIC(5,2),
+  trees_planted  INTEGER NOT NULL DEFAULT 0,
+  trees_survived INTEGER NOT NULL DEFAULT 0,
+  ivi            NUMERIC(5,2),
+  compliance_pct NUMERIC(5,2),
+  is_suspicious  BOOLEAN DEFAULT FALSE,
+  recorded_at    TIMESTAMPTZ DEFAULT NOW()
 );
 
 CREATE TABLE IF NOT EXISTS project_metrics (
-  project_id      UUID PRIMARY KEY REFERENCES projects(id) ON DELETE CASCADE,
-  current_ivi     NUMERIC(5,2) DEFAULT 0,
-  compliance_pct  NUMERIC(5,2) DEFAULT 0,
-  updated_at      TIMESTAMPTZ DEFAULT NOW()
+  project_id     UUID PRIMARY KEY REFERENCES projects(id) ON DELETE CASCADE,
+  current_ivi    NUMERIC(5,2) DEFAULT 0,
+  compliance_pct NUMERIC(5,2) DEFAULT 0,
+  updated_at     TIMESTAMPTZ DEFAULT NOW()
 );
 
 CREATE TABLE IF NOT EXISTS alerts (
-  id            UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  project_id    UUID NOT NULL REFERENCES projects(id) ON DELETE CASCADE,
-  type          VARCHAR(50) NOT NULL CHECK (type IN (
-                  'ivi_critico','cumplimiento_bajo','baja_supervivencia',
-                  'temperatura_critica','inactividad'
-                )),
-  message       TEXT NOT NULL,
-  status        VARCHAR(20) DEFAULT 'activa' CHECK (status IN ('activa','revisada')),
-  reviewed_by   UUID REFERENCES users(id),
-  reviewed_at   TIMESTAMPTZ,
-  created_at    TIMESTAMPTZ DEFAULT NOW()
+  id          UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  project_id  UUID NOT NULL REFERENCES projects(id) ON DELETE CASCADE,
+  type        VARCHAR(50) NOT NULL CHECK (type IN (
+                'ivi_critico','cumplimiento_bajo','baja_supervivencia',
+                'temperatura_critica','inactividad'
+              )),
+  message     TEXT NOT NULL,
+  status      VARCHAR(20) DEFAULT 'activa' CHECK (status IN ('activa','revisada')),
+  reviewed_by UUID REFERENCES users(id),
+  reviewed_at TIMESTAMPTZ,
+  created_at  TIMESTAMPTZ DEFAULT NOW()
 );
 
 CREATE TABLE IF NOT EXISTS evidence (
@@ -89,27 +88,27 @@ CREATE TABLE IF NOT EXISTS evidence (
 );
 
 CREATE TABLE IF NOT EXISTS change_log (
-  id            UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  project_id    UUID REFERENCES projects(id) ON DELETE SET NULL,
-  user_id       UUID REFERENCES users(id) ON DELETE SET NULL,
-  entity        VARCHAR(100) NOT NULL,
-  action        VARCHAR(50)  NOT NULL,
-  old_values    JSONB,
-  new_values    JSONB,
-  ip_address    VARCHAR(45),
-  created_at    TIMESTAMPTZ DEFAULT NOW()
+  id         UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  project_id UUID REFERENCES projects(id) ON DELETE SET NULL,
+  user_id    UUID REFERENCES users(id) ON DELETE SET NULL,
+  entity     VARCHAR(100) NOT NULL,
+  action     VARCHAR(50)  NOT NULL,
+  old_values JSONB,
+  new_values JSONB,
+  ip_address VARCHAR(45),
+  created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
 CREATE TABLE IF NOT EXISTS audit_log (
-  id          UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  user_id     UUID REFERENCES users(id) ON DELETE SET NULL,
-  role        VARCHAR(20),
-  action      VARCHAR(255) NOT NULL,
-  entity      VARCHAR(100),
-  entity_id   UUID,
-  metadata    JSONB,
-  ip_address  VARCHAR(45),
-  created_at  TIMESTAMPTZ DEFAULT NOW()
+  id         UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  user_id    UUID REFERENCES users(id) ON DELETE SET NULL,
+  role       VARCHAR(20),
+  action     VARCHAR(255) NOT NULL,
+  entity     VARCHAR(100),
+  entity_id  UUID,
+  metadata   JSONB,
+  ip_address VARCHAR(45),
+  created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
 CREATE INDEX IF NOT EXISTS idx_projects_owner      ON projects(owner_id);
@@ -122,9 +121,6 @@ CREATE INDEX IF NOT EXISTS idx_evidence_project    ON evidence(project_id);
 CREATE INDEX IF NOT EXISTS idx_change_log_project  ON change_log(project_id);
 CREATE INDEX IF NOT EXISTS idx_audit_log_user      ON audit_log(user_id);
 CREATE INDEX IF NOT EXISTS idx_audit_log_created   ON audit_log(created_at DESC);
-
-CREATE UNIQUE INDEX IF NOT EXISTS idx_indicators_unique_day
-  ON indicators(project_id, user_id, CAST(recorded_at AS DATE));
 `;
 
 async function migrate() {
