@@ -1,0 +1,13 @@
+# railway.toml — Configuración del backend en Railway
+# Ubicar en la raíz del repositorio o en /backend
+
+[build]
+builder = "NIXPACKS"
+buildCommand = "cd backend && npm install"
+
+[deploy]
+startCommand = "cd backend && npm start"
+healthcheckPath = "/api/health"
+healthcheckTimeout = 30
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 3
