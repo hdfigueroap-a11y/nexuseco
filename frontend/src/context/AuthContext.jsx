@@ -1,6 +1,3 @@
-// frontend/src/context/AuthContext.jsx
-// RF01 — Contexto global de autenticación
-
 import { createContext, useContext, useState, useEffect } from 'react';
 import api from '../services/api';
 
@@ -10,12 +7,16 @@ export function AuthProvider({ children }) {
   const [user, setUser]       = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // Rehidratar sesión al recargar
   useEffect(() => {
     const stored = localStorage.getItem('nexuseco_user');
     const token  = localStorage.getItem('nexuseco_token');
     if (stored && token) {
-      setUser(JSON.parse(stored));
+      try {
+        setUser(JSON.parse(stored));
+      } catch (_) {
+        localStorage.removeItem('nexuseco_user');
+        localStorage.removeItem('nexuseco_token');
+      }
     }
     setLoading(false);
   }, []);
