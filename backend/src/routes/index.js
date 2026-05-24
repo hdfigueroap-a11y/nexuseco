@@ -46,6 +46,7 @@ router.get('/projects',     authenticate, projectsCtrl.list);
 router.get('/projects/:id', authenticate, projectsCtrl.getOne);
 router.put('/projects/:id', authenticate, authorize('operador'), projectsCtrl.update);
 router.post('/projects/:id/invest', authenticate, authorize('empresa'), projectsCtrl.invest);
+router.delete('/projects/:id', authenticate, authorize('operador'), projectsCtrl.deleteProject);
 
 // ── RF03 Geografía ───────────────────────────────────────
 router.put('/projects/:id/geo', authenticate, authorize('operador'),
