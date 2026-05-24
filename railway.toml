@@ -1,12 +1,9 @@
-# railway.toml — Configuración del backend en Railway
-# Ubicar en la raíz del repositorio o en /backend
-
 [build]
 builder = "NIXPACKS"
 buildCommand = "cd backend && npm install"
 
 [deploy]
-startCommand = "cd backend && node src/config/migrate.js && node src/config/seed.js && npm start"
+startCommand = "cd backend && node src/config/migrate.js && node src/config/migrate_sprint3.js && node src/config/seed.js && npm start"
 healthcheckPath = "/api/health"
 healthcheckTimeout = 60
 restartPolicyType = "ON_FAILURE"
