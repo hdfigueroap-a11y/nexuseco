@@ -19,6 +19,19 @@ export default function ProjectDetailPage() {
   const [project, setProject] = useState(null);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('Indicadores');
+  const [deleting, setDeleting]   = useState(false);
+
+  async function handleDelete() {
+    if (!confirm(`¿Seguro que deseas eliminar el proyecto "${project.name}"? Esta acción no se puede deshacer.`)) return;
+    setDeleting(true);
+    try {
+      await api.delete(`/projects/${id}`);
+      navigate('/projects');
+    } catch (err) {
+      alert(err.response?.data?.error || 'Error al eliminar el proyecto.');
+      setDeleting(false);
+    }
+  }
 
   const TABS = [
     'Indicadores',
@@ -63,6 +76,12 @@ export default function ProjectDetailPage() {
             <p className="text-gray-500 text-sm mt-1">{project.description}</p>
           </div>
           <div className="flex gap-4 shrink-0">
+            {user?.role === 'operador' && project.owner_id === user?.id && (
+              <button onClick={handleDelete} disabled={deleting}
+                className="btn-danger text-sm">
+                {deleting ? 'Eliminando...' : '🗑️ Eliminar'}
+              </button>
+            )}
             <MetricBox value={`${project.current_ivi ?? '—'}%`} label="IVI" critical={!iviOk} />
             <MetricBox value={`${project.compliance_pct ?? '—'}%`} label="Cumplimiento"
               critical={(project.compliance_pct ?? 100) < 70} />
