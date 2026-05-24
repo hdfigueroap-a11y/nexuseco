@@ -4,45 +4,82 @@
 
 @layer base {
   body {
-    @apply bg-marfil text-gray-900 antialiased;
+    @apply bg-negro-300 text-white antialiased;
   }
+
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track  { @apply bg-negro-300; }
+  ::-webkit-scrollbar-thumb  { @apply bg-negro-50 rounded-full; }
 }
 
 @layer components {
+
+  /* ── Botones ─────────────────────────────────────── */
   .btn-primary {
-    @apply bg-eco-600 hover:bg-eco-700 text-white font-semibold px-4 py-2 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed;
+    @apply bg-neon-400 hover:bg-neon-500 text-white font-semibold px-4 py-2 rounded-lg
+           transition-all disabled:opacity-40 disabled:cursor-not-allowed
+           shadow-[0_0_12px_rgba(34,114,255,0.4)] hover:shadow-[0_0_20px_rgba(34,114,255,0.6)];
   }
   .btn-secondary {
-    @apply bg-white hover:bg-marfil text-gray-700 font-semibold px-4 py-2 rounded-lg border border-gray-300 transition-colors;
+    @apply bg-negro-200 hover:bg-negro-100 text-white font-semibold px-4 py-2 rounded-lg
+           border border-white/10 transition-all;
+  }
+  .btn-success {
+    @apply bg-malaquita-300 hover:bg-malaquita-400 text-negro-300 font-semibold px-4 py-2 rounded-lg
+           transition-all shadow-[0_0_12px_rgba(49,236,86,0.3)] hover:shadow-[0_0_20px_rgba(49,236,86,0.5)];
   }
   .btn-danger {
-    @apply bg-red-600 hover:bg-red-700 text-white font-semibold px-4 py-2 rounded-lg transition-colors;
+    @apply bg-razzmatazz-400 hover:bg-razzmatazz-500 text-white font-semibold px-4 py-2 rounded-lg
+           transition-all shadow-[0_0_12px_rgba(239,3,108,0.3)];
   }
-  .btn-yellow {
-    @apply bg-mandarina-400 hover:bg-mandarina-500 text-gray-900 font-semibold px-4 py-2 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed;
+  .btn-purple {
+    @apply bg-heliotropo-300 hover:bg-heliotropo-400 text-negro-300 font-semibold px-4 py-2 rounded-lg
+           transition-all shadow-[0_0_12px_rgba(238,114,248,0.3)];
   }
+
+  /* ── Cards ───────────────────────────────────────── */
   .card {
-    @apply bg-white rounded-xl shadow-sm border border-marfil-100 p-6;
+    @apply bg-negro-200 rounded-xl border border-white/10 p-6 shadow-lg;
   }
+  .card-neon {
+    @apply bg-negro-200 rounded-xl border border-neon-400/30 p-6 shadow-[0_0_20px_rgba(34,114,255,0.1)];
+  }
+  .card-green {
+    @apply bg-negro-200 rounded-xl border border-malaquita-300/30 p-6 shadow-[0_0_20px_rgba(49,236,86,0.1)];
+  }
+
+  /* ── Inputs ──────────────────────────────────────── */
   .input {
-    @apply w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-eco-600 focus:border-eco-600 bg-white;
+    @apply w-full bg-negro-300 border border-white/20 rounded-lg px-3 py-2 text-sm text-white
+           placeholder-white/30
+           focus:outline-none focus:ring-2 focus:ring-neon-400 focus:border-neon-400
+           transition-all;
   }
   .label {
-    @apply block text-sm font-medium text-gray-700 mb-1;
+    @apply block text-sm font-medium text-white/70 mb-1;
   }
-  .badge-activa {
-    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800;
-  }
-  .badge-revisada {
-    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-eco-100 text-eco-800;
-  }
-  .badge-ivi-ok {
-    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-eco-100 text-eco-800;
-  }
-  .badge-ivi-critico {
-    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800;
+
+  /* ── Badges ──────────────────────────────────────── */
+  .badge-ok {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+           bg-malaquita-300/20 text-malaquita-300 border border-malaquita-300/30;
   }
   .badge-warning {
-    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-mandarina-100 text-mandarina-700;
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+           bg-neon-400/20 text-neon-300 border border-neon-400/30;
   }
+  .badge-danger {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+           bg-razzmatazz-400/20 text-razzmatazz-300 border border-razzmatazz-400/30;
+  }
+  .badge-purple {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+           bg-heliotropo-300/20 text-heliotropo-300 border border-heliotropo-300/30;
+  }
+
+  /* Aliases para compatibilidad con código existente */
+  .badge-activa      { @apply badge-danger; }
+  .badge-revisada    { @apply badge-ok; }
+  .badge-ivi-ok      { @apply badge-ok; }
+  .badge-ivi-critico { @apply badge-danger; }
 }
