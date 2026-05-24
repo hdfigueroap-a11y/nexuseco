@@ -325,4 +325,39 @@ async function invest(req, res, next) {
   }
 }
 
-module.exports = { create, list, getOne, update, setGeo, getGeo, listAvailable, invest };
+
+async function deleteProject(req, res, next) {
+  try {
+    const { id } = req.params;
+    const userId = req.user.id;
+
+    const { rows: [project] } = await query('SELECT * FROM projects WHERE id = $1', [id]);
+    if (!project) return res.status(404).json({ error: 'Proyecto no encontrado.' });
+
+    if (project.owner_id !== userId) {
+      return res.status(403).json({ error: 'Solo el operador creador puede eliminar este proyecto.' });
+    }
+
+    const { rows: [count] } = await query(
+      'SELECT COUNT(*) AS total FROM indicators WHERE project_id = $1', [id]
+    );
+    if (parseInt(count.total) > 0) {
+      return res.status(409).json({
+        error: 'No se puede eliminar un proyecto con indicadores registrados. Cámbialo a estado "inactivo" en su lugar.',
+      });
+    }
+
+    await query('DELETE FROM projects WHERE id = $1', [id]);
+
+    await logChange({
+      projectId: id, userId, entity: 'projects', action: 'delete',
+      oldValues: project, ipAddress: req.ip,
+    });
+
+    return res.json({ message: 'Proyecto eliminado correctamente.' });
+  } catch (err) {
+    next(err);
+  }
+}
+
+module.exports = { create, list, getOne, update, setGeo, getGeo, listAvailable, invest, deleteProject };
