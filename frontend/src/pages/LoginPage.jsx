@@ -5,8 +5,8 @@ import { useAuth } from '../context/AuthContext';
 export default function LoginPage() {
   const { login } = useAuth();
   const navigate  = useNavigate();
-  const [form, setForm]     = useState({ email: '', password: '' });
-  const [error, setError]   = useState('');
+  const [form, setForm]       = useState({ email: '', password: '' });
+  const [error, setError]     = useState('');
   const [loading, setLoading] = useState(false);
 
   async function handleSubmit(e) {
@@ -14,7 +14,7 @@ export default function LoginPage() {
     setError('');
     setLoading(true);
     try {
-      const user = await login(form.email, form.password);
+      await login(form.email, form.password);
       navigate('/dashboard');
     } catch (err) {
       setError(err.response?.data?.error || 'Error al iniciar sesión.');
@@ -24,25 +24,34 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-marfil flex items-center justify-center px-4">
-      <div className="w-full max-w-md">
+    <div className="min-h-screen bg-negro-300 flex items-center justify-center px-4">
+      {/* Fondo con gradiente sutil */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute -top-40 -left-40 w-80 h-80 bg-neon-400/10 rounded-full blur-3xl" />
+        <div className="absolute -bottom-40 -right-40 w-80 h-80 bg-heliotropo-300/10 rounded-full blur-3xl" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-malaquita-300/5 rounded-full blur-3xl" />
+      </div>
+
+      <div className="w-full max-w-md relative z-10">
 
         {/* Header */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-eco-600 text-4xl mb-4 shadow-lg">
+          <div className="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-gradient-neon text-4xl mb-4 shadow-[0_0_30px_rgba(34,114,255,0.4)]">
             🌱
           </div>
-          <h1 className="text-3xl font-bold text-eco-600">Nexus Eco</h1>
-          <p className="text-gray-500 mt-1 text-sm">Plataforma de Monitoreo Ambiental</p>
-          <div className="mt-2 h-1 w-16 bg-mandarina-400 rounded-full mx-auto" />
+          <h1 className="text-3xl font-bold">
+            Nexus <span className="text-neon-400">Eco</span>
+          </h1>
+          <p className="text-white/50 mt-1 text-sm">Plataforma de Monitoreo Ambiental</p>
+          <div className="mt-3 h-0.5 w-20 bg-gradient-neon rounded-full mx-auto" />
         </div>
 
         {/* Card */}
-        <div className="bg-white rounded-2xl shadow-md border border-marfil-100 p-8">
-          <h2 className="text-xl font-semibold text-gray-800 mb-6">Iniciar sesión</h2>
+        <div className="bg-negro-200 rounded-2xl border border-white/10 p-8 shadow-2xl">
+          <h2 className="text-lg font-semibold text-white mb-6">Iniciar sesión</h2>
 
           {error && (
-            <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
+            <div className="mb-4 p-3 bg-razzmatazz-400/10 border border-razzmatazz-400/30 rounded-lg text-razzmatazz-300 text-sm">
               {error}
             </div>
           )}
@@ -65,15 +74,17 @@ export default function LoginPage() {
             </button>
           </form>
 
-          <p className="text-center text-sm text-gray-500 mt-5">
+          <p className="text-center text-sm text-white/50 mt-5">
             ¿No tienes cuenta?{' '}
-            <Link to="/register" className="text-eco-600 font-medium hover:underline">Regístrate aquí</Link>
+            <Link to="/register" className="text-neon-400 font-medium hover:text-neon-300 transition-colors">
+              Regístrate aquí
+            </Link>
           </p>
         </div>
 
-        {/* Credenciales de prueba */}
-        <div className="mt-4 p-4 bg-eco-50 border border-eco-200 rounded-xl text-xs text-eco-700">
-          <p className="font-semibold mb-1 text-eco-600">Usuarios de prueba:</p>
+        {/* Credenciales */}
+        <div className="mt-4 p-4 bg-negro-200/50 border border-white/10 rounded-xl text-xs text-white/50">
+          <p className="font-semibold mb-1 text-malaquita-300">Usuarios de prueba:</p>
           <p>🏢 empresa@nexuseco.com / Empresa123!</p>
           <p>🌿 operador@nexuseco.com / Operador123!</p>
           <p>🔍 auditor@nexuseco.com / Auditor123!</p>

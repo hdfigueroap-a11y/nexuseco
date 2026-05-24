@@ -5,8 +5,8 @@ import { useAuth } from '../context/AuthContext';
 export default function RegisterPage() {
   const { register } = useAuth();
   const navigate = useNavigate();
-  const [form, setForm]     = useState({ full_name: '', email: '', password: '', role: 'operador' });
-  const [error, setError]   = useState('');
+  const [form, setForm]       = useState({ full_name: '', email: '', password: '', role: 'operador' });
+  const [error, setError]     = useState('');
   const [loading, setLoading] = useState(false);
 
   async function handleSubmit(e) {
@@ -25,20 +25,29 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="min-h-screen bg-marfil flex items-center justify-center px-4 py-8">
-      <div className="w-full max-w-md">
+    <div className="min-h-screen bg-negro-300 flex items-center justify-center px-4 py-8">
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute -top-40 -right-40 w-80 h-80 bg-heliotropo-300/10 rounded-full blur-3xl" />
+        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-malaquita-300/10 rounded-full blur-3xl" />
+      </div>
+
+      <div className="w-full max-w-md relative z-10">
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-eco-600 text-4xl mb-4 shadow-lg">🌱</div>
-          <h1 className="text-3xl font-bold text-eco-600">Nexus Eco</h1>
-          <p className="text-gray-500 mt-1 text-sm">Crear cuenta</p>
-          <div className="mt-2 h-1 w-16 bg-mandarina-400 rounded-full mx-auto" />
+          <div className="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-gradient-neon text-4xl mb-4 shadow-[0_0_30px_rgba(34,114,255,0.4)]">
+            🌱
+          </div>
+          <h1 className="text-3xl font-bold">Nexus <span className="text-neon-400">Eco</span></h1>
+          <p className="text-white/50 mt-1 text-sm">Crear cuenta</p>
+          <div className="mt-3 h-0.5 w-20 bg-gradient-neon rounded-full mx-auto" />
         </div>
 
-        <div className="bg-white rounded-2xl shadow-md border border-marfil-100 p-8">
-          <h2 className="text-xl font-semibold text-gray-800 mb-6">Registro</h2>
+        <div className="bg-negro-200 rounded-2xl border border-white/10 p-8 shadow-2xl">
+          <h2 className="text-lg font-semibold text-white mb-6">Registro</h2>
 
           {error && (
-            <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">{error}</div>
+            <div className="mb-4 p-3 bg-razzmatazz-400/10 border border-razzmatazz-400/30 rounded-lg text-razzmatazz-300 text-sm">
+              {error}
+            </div>
           )}
 
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -71,9 +80,11 @@ export default function RegisterPage() {
             </button>
           </form>
 
-          <p className="text-center text-sm text-gray-500 mt-5">
+          <p className="text-center text-sm text-white/50 mt-5">
             ¿Ya tienes cuenta?{' '}
-            <Link to="/login" className="text-eco-600 font-medium hover:underline">Inicia sesión</Link>
+            <Link to="/login" className="text-neon-400 font-medium hover:text-neon-300 transition-colors">
+              Inicia sesión
+            </Link>
           </p>
         </div>
       </div>
